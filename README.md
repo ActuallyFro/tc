@@ -4,10 +4,10 @@ This is just a glorified grouping of aliases I want to use with some combination
 
 Supported Output Types
 ----------------------
-[TODO] PDF
-[TODO] HTML
-[TODO] PPTX
-[TODO] DOCX
+- [TODO] PDF
+- [TODO] HTML
+- [TODO] PPTX
+- [TODO] DOCX
 
 TL;DR
 -----
