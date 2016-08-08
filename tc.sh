@@ -26,3 +26,22 @@ if [[ "$IName_2" == "" ]]; then echo "File Does NOT exist!"; exit; fi
 if [ ! -f $IName_2 ]; then echo "File Does NOT exist!"; exit; fi
 
 #funtion_CheckEmpty($FileName)
+
+#this could all be the same if awk was passed the type as a var...
+if [[ "pdf" == "$OType_1" ]]; then
+   echo "Staring pdf generation..."
+   OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".pdf"}'`
+   echo "Creating file: $OName_3"
+elif [[ "html" == "$OType_1" ]]; then
+  echo "Staring html generation..."
+  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".html"}'`
+  echo "Creating file: $OName_3"
+elif [[ "pptx" == "$OType_1" ]]; then
+  echo "Staring pptx generation..."
+  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".pptx"}'`
+  echo "Creating file: $OName_3"
+elif [[ "docx" == "$OType_1" ]]; then
+  echo "Staring docx generation..."
+  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".docx"}'`
+  echo "Creating file: $OName_3"
+fi
