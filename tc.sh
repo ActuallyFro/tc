@@ -27,21 +27,33 @@ if [ ! -f $IName_2 ]; then echo "File Does NOT exist!"; exit; fi
 
 #funtion_CheckEmpty($FileName)
 
-#this could all be the same if awk was passed the type as a var...
+OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
+echo "Staring $OType_1 generation...Creating file: $OName_3"
 if [[ "pdf" == "$OType_1" ]]; then
-   echo "Staring pdf generation..."
-   OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".pdf"}'`
-   echo "Creating file: $OName_3"
+   #echo "[Debug] In the pdf loop"
+
+   BuildStr=""
+   BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   if [ -f $BibName ]; then
+      BuildStr=$BuildStr"--bibliography $BibName "
+   fi
+
+   CslName=`ls | grep csl`
+   if [[ ! "$CslName" == "" ]]; then
+      BuildStr=$BuildStr"--csl ieee.csl "
+   fi
+
+   BuildStr=$BuildStr"-V geometry:margin=1.125in -V linkcolor=black"
+
+   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   pandoc -i $IName_2 $BuildStr -o $OName_3
+
 elif [[ "html" == "$OType_1" ]]; then
-  echo "Staring html generation..."
-  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".html"}'`
-  echo "Creating file: $OName_3"
+  echo "[Debug] In the html loop"
 elif [[ "pptx" == "$OType_1" ]]; then
-  echo "Staring pptx generation..."
-  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".pptx"}'`
-  echo "Creating file: $OName_3"
+  echo "[Debug] In the pptx loop"
 elif [[ "docx" == "$OType_1" ]]; then
-  echo "Staring docx generation..."
-  OName_3=`echo "$IName_2" | tr "." " " | awk '{print $1".docx"}'`
-  echo "Creating file: $OName_3"
+  echo "[Debug] In the docx loop"
 fi
+
+echo "Done!"
