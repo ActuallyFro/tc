@@ -38,14 +38,19 @@ if [[ "pdf" == "$OType_1" ]]; then
       BuildStr=$BuildStr"--bibliography $BibName "
    fi
 
-   CslName=`ls | grep csl`
-   if [[ ! "$CslName" == "" ]]; then
-      BuildStr=$BuildStr"--csl ieee.csl "
+   AuthorFile="authorinfo.yml"
+   if [ -f $AuthorFile ]; then
+      BuildStr=$BuildStr"-s $AuthorFile "
    fi
 
-   BuildStr=$BuildStr"-V geometry:margin=1.125in -V linkcolor=black"
+   CslName=`ls | grep csl`
+   if [[ ! "$CslName" == "" ]]; then
+      BuildStr=$BuildStr"--csl $CslName "
+   fi
 
-   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   BuildStr=$BuildStr"--toc -V documentclass=report -V geometry:margin=1.125in -V linkcolor=black"
+
+   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
 
 elif [[ "html" == "$OType_1" ]]; then

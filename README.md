@@ -17,6 +17,12 @@ Pandoc is leveraged to build the input (presumably a markdown or Latex file) to 
 
 ###CSL Style Sheet support
 
+##Formatting - Table of Contents
+
+##Formatting - Margins
+
+##Formatting - Black URL/Refeference links
+
 TL;DR
 -----
 I'm lazy; this builds things from text...
