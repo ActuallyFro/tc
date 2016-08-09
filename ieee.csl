@@ -4,7 +4,7 @@
     <title>IEEE (with URL)</title>
     <id>http://www.zotero.org/styles/ieee-with-url</id>
     <link href="http://www.zotero.org/styles/ieee-with-url" rel="self"/>
-    <link href="http://www.ieee.org/documents/stylemanual.pdf" rel="documentation"/>
+    <link href="http://www.ieee.org/documents/style_manual.pdf" rel="documentation"/>
     <link href="http://www.ieee.org/documents/auinfo07.pdf" rel="documentation"/>
     <author>
       <name>Michael Berkowitz</name>
@@ -210,7 +210,7 @@
       <key variable="citation-number"/>
     </sort>
     <layout delimiter=", ">
-      <group prefix="[" suffix="] " delimiter=", ">
+      <group prefix="[" suffix="]" delimiter=", ">
         <text variable="citation-number"/>
         <text macro="citation-locator"/>
       </group>
@@ -220,7 +220,7 @@
   <bibliography entry-spacing="0" second-field-align="flush">
     <layout>
       <!-- Citation Number -->
-      <text variable="citation-number" prefix="[" suffix="] "/>
+      <text variable="citation-number" prefix="[" suffix="]"/>
       <!-- Author(s) -->
       <text macro="author" suffix=", "/>
       <!-- Rest of Citation -->
@@ -273,7 +273,7 @@
           </else-if>
           <else-if type="patent">
             <text macro="title" suffix=", "/>
-            <text variable="number" prefix=" "/>
+            <text variable="number"/>
             <text macro="issued"/>
           </else-if>
           <!-- Generic/Fallback Formats -->
