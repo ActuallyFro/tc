@@ -14,7 +14,7 @@ PDF "Options"
 Pandoc is leveraged to build the input (presumably a markdown or Latex file) to pdf.
 
 ###Bibtex Support
-Fake Entry\[[@item2]\]
+BibTex is a tool and format which describe references, which are mostly used with LaTeX[@BibTex].
 
 ###CSL Style Sheet support
 

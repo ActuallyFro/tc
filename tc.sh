@@ -48,7 +48,8 @@ if [[ "pdf" == "$OType_1" ]]; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-   BuildStr=$BuildStr"--toc -V documentclass=report -V geometry:margin=1.125in -V linkcolor=black"
+#   BuildStr=$BuildStr"--toc -V documentclass=report -V geometry:margin=1.125in -V linkcolor=black"
+   BuildStr=$BuildStr"--toc -V geometry:margin=1.125in -V linkcolor=black"
 
    echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
