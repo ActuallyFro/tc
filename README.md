@@ -14,6 +14,7 @@ PDF "Options"
 Pandoc is leveraged to build the input (presumably a markdown or Latex file) to pdf.
 
 ###Bibtex Support
+Fake Entry\[[@item2]\]
 
 ###CSL Style Sheet support
 
@@ -26,3 +27,5 @@ Pandoc is leveraged to build the input (presumably a markdown or Latex file) to 
 TL;DR
 -----
 I'm lazy; this builds things from text...
+
+#References
