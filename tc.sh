@@ -5,7 +5,7 @@ OType_1=$1
 IName_2=$2
 OName_3=$3
 
-OTypes=(pdf html pptx docx)
+OTypes=(pdf html pptx docx wiki)
 
 #File Checks
 #===========
@@ -48,7 +48,6 @@ if [[ "pdf" == "$OType_1" ]]; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-#   BuildStr=$BuildStr"--toc -V documentclass=report -V geometry:margin=1.125in -V linkcolor=black"
    BuildStr=$BuildStr"--toc -V geometry:margin=1.125in -V linkcolor=black"
 
    echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
@@ -60,6 +59,20 @@ elif [[ "pptx" == "$OType_1" ]]; then
   echo "[Debug] In the pptx loop"
 elif [[ "docx" == "$OType_1" ]]; then
   echo "[Debug] In the docx loop"
+elif [[ "wiki" == "$OType_1" ]]; then
+   #echo "[Debug] In the wiki loop"
+
+   BuildStr=""
+   BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   if [ -f $BibName ]; then
+      BuildStr=$BuildStr"--bibliography $BibName "
+   fi
+
+   BuildStr=$BuildStr"-s -S -t mediawiki --toc "
+
+   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   pandoc -i $IName_2 $BuildStr -o $OName_3
 fi
 
 echo "Done!"
+pandoc -s -S -t mediawiki --toc README.md -o README.wiki

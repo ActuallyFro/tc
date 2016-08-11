@@ -8,6 +8,7 @@ Supported Output Types
 - [TODO] HTML
 - [TODO] PPTX
 - [TODO] DOCX
+- [WIP] Wiki
 
 PDF "Options"
 -------------
@@ -25,7 +26,11 @@ BibTex is a tool and format which describe references, which are mostly used wit
 ##Formatting - Black URL/Refeference links
 
 TL;DR
------
+=====
 I'm lazy; this builds things from text...
+
+Credits
+=======
+The CitationStyleLanguage.org website manages the CSL/XML formatting.
 
 #References
