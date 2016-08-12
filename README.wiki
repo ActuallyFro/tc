@@ -6,19 +6,19 @@ This is just a glorified grouping of aliases I want to use with some combination
 
 == Supported Output Types ==
 
-* [WIP] PDF
+* PDF
 * [TODO] HTML
 * [TODO] PPTX
 * [TODO] DOCX
-* [WIP] Wiki
+* Wiki
 
-== PDF “Options” ==
+== PDF &quot;Options&quot; ==
 
 Pandoc is leveraged to build the input (presumably a markdown or Latex file) to pdf.
 
 === Bibtex Support ===
 
-BibTex is a tool and format which describe references, which are mostly used with LaTeX[@BibTex].
+BibTex is a tool and format which describe references, which are mostly used with LaTeX(Feder 2006).
 
 === CSL Style Sheet support ===
 
@@ -28,12 +28,31 @@ BibTex is a tool and format which describe references, which are mostly used wit
 
 == Formatting - Black URL/Refeference links ==
 
+== Wiki &quot;Options&quot; ==
+
+The output type of <code>wiki</code> will output a .wiki file that is compliant to the Mediawiki (markup) format.
+
+=== Bibtex Support ===
+
+BibTex has limited support when generating the wiki file via Pandoc. Currently the References will be manually placed in the document simliar to APA citation formats (as opposed to hyperlinked Mediawiki formatting).
+
 = TL;DR =
 
-I’m lazy; this builds things from text…
+I'm lazy; this builds things from text...
 
 = Credits =
 
 The CitationStyleLanguage.org website manages the CSL/XML formatting.
 
 = References =
+
+<div id="refs" class="references">
+
+<div id="ref-BibTex">
+
+Feder, Alexander. 2006. “Your Bibtex Resource.” http://www.bibtex.org/.
+
+
+</div>
+
+</div>

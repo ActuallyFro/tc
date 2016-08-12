@@ -4,11 +4,11 @@ This is just a glorified grouping of aliases I want to use with some combination
 
 Supported Output Types
 ----------------------
-- [WIP] PDF
+- PDF
 - [TODO] HTML
 - [TODO] PPTX
 - [TODO] DOCX
-- [WIP] Wiki
+- Wiki
 
 PDF "Options"
 -------------
@@ -24,6 +24,14 @@ BibTex is a tool and format which describe references, which are mostly used wit
 ##Formatting - Margins
 
 ##Formatting - Black URL/Refeference links
+
+Wiki "Options"
+--------------
+The output type of `wiki` will output a .wiki file that is compliant to the Mediawiki (markup) format.
+
+###Bibtex Support
+BibTex has limited support when generating the wiki file via Pandoc.
+Currently the References will be manually placed in the document simliar to APA citation formats (as opposed to hyperlinked Mediawiki formatting).
 
 TL;DR
 =====
