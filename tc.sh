@@ -12,7 +12,6 @@ Supported Types
 ---------------
 tc pdf <filename>
 tc html <filename>
-tc pptx <filename>
 tc docx <filename>
 tc wiki <filename>
 
@@ -29,25 +28,30 @@ Other Options
 --license - print license
 --version - print version number
 --templates - show options for available templates
+--install - copy this script to /bin/$0
 EOF
 
 read -d '' TemplatesMsg << EOF
+[WORK IN PROGRESS -- TBD FINISH]
 Templates
 =========
 To help quickly document projects a few templates will be provided.
 This is not all in inclusive, but I find these to be my most used types.
 
-report
-------
+Report (tc init report)
+-----------------------
 
-ebook
------
+eBook (tc init ebook)
+---------------------
 
-thesis
-------
+Thesis (tc init thesis)
+-----------------------
 
+Website  (tc init website)
+--------------------------
 
 EOF
+
 
 
 read -d '' License << EOF
@@ -77,13 +81,11 @@ if [[ "$WorkingDir" == "" ]]; then
 fi
 #echo "[Debug] This is the location of tc: $WorkingDir"
 
-#source $WorkingDir/include/functions.sh
-
 OType_1=$1
 IName_2=$2
 OName_3=$3
 
-OTypes=(pdf html pptx docx wiki all init)
+OTypes=(pdf html docx wiki all init) #Add in : webppt
 
 #File Checks
 #===========
@@ -97,7 +99,8 @@ fi
 
 if [[ "$OType_1" == "--version" ]];then
    echo ""
-   echo "$Version"
+   echo "Version: $Version"
+   echo "md5 (less last line): "`cat $0 | head -n -1 | md5sum | awk '{print $1}'`
    exit
 fi
 
@@ -110,6 +113,23 @@ fi
 if [[ "$OType_1" == "--license" ]];then
    echo ""
    echo "$License"
+   exit
+fi
+
+if [[ "$OType_1" == "--install" ]];then
+   echo ""
+   echo "Attempting to install $0 to /bin"
+
+   User=`whoami`
+   if [[ "$User" != "root" ]]; then
+      echo "[WARNING] Currently NOT root!"
+   fi
+   cp $0 /bin/tc
+   Check=`ls /bin/tc | wc -l`
+   if [[ "$Check" == "1" ]]; then
+      echo "tc installed successfully!"
+   fi
+
    exit
 fi
 
@@ -149,13 +169,19 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    if [[ "true" == "$AllType" ]]; then
      OType_1="pdf"
    fi
-   OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
+   OName_3=`echo "$IName_2" | tr "/" "\n" | grep "." | tr "." " " | grep [^[:blank:]] | awk -v type="$OType_1" '{print $1"."type}'`
    echo "Staring $OType_1 generation...Creating file: $OName_3"
 
    BuildStr=""
-   BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   BibName=`ls | grep ".bib"`
    if [ -f $BibName ]; then
       BuildStr=$BuildStr"--bibliography $BibName "
+   fi
+
+   CslName=`ls | grep ".csl"`
+   if [[ ! "$CslName" == "" ]]; then
+      BuildStr=$BuildStr"--csl $CslName "
    fi
 
    AuthorFile="authorinfo.yml"
@@ -163,15 +189,10 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
 
-   CslName=`ls | grep csl`
-   if [[ ! "$CslName" == "" ]]; then
-      BuildStr=$BuildStr"--csl $CslName "
-   fi
+   #For a report: ""--toc -V documentclass:report"
+   BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
 
-   #BuildStr=$BuildStr"--toc -V geometry:margin=1.125in -V linkcolor=black"
-   BuildStr=$BuildStr"-V geometry:margin=1.125in -V linkcolor=black"
-
-   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
@@ -179,61 +200,148 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 fi
 
 if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
-  echo "[Debug] In the html loop"
+  #echo "[Debug] In the html loop"
   if [[ "true" == "$AllType" ]]; then
     OType_1="html"
   fi
-  OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
+  OName_3=`echo "$IName_2" | tr "/" "\n" | grep "." | tr "." " " | grep [^[:blank:]] | awk -v type="$OType_1" '{print $1"."type}'`
   echo "Staring $OType_1 generation...Creating file: $OName_3"
+
+  BuildStr=""
+  #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+  BibName=`ls | grep ".bib"`
+  if [ -f $BibName ]; then
+     BuildStr=$BuildStr"--bibliography $BibName "
+  fi
+
+  CslName=`ls | grep ".csl"`
+  if [[ ! "$CslName" == "" ]]; then
+     BuildStr=$BuildStr"--csl $CslName "
+  fi
+
+  AuthorFile="authorinfo.yml"
+  if [ -f $AuthorFile ]; then
+     BuildStr=$BuildStr"-s $AuthorFile "
+  fi
+
+  FooterName=`ls | grep -i footer.html`
+  if [ -f $FooterName ]; then
+     BuildStr=$BuildStr"-A $FooterName "
+  fi
+
+  CssName=`ls | grep css`
+  if [[ ! "$CssName" == "" ]]; then
+     BuildStr=$BuildStr"-c $CssName "
+  fi
+
+  BuildStr=$BuildStr"--number-sections --table-of-contents "
+
+  #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+  pandoc -i $IName_2 $BuildStr -o $OName_3
 
   if [[ "true" == "$AllType" ]]; then
     OType_1="all"
   fi
 fi
 
-if [[ "pptx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
-  echo "[Debug] In the pptx loop"
-  if [[ "true" == "$AllType" ]]; then
-    OType_1="pptx"
-  fi
-  OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
-  echo "Staring $OType_1 generation...Creating file: $OName_3"
-
-  if [[ "true" == "$AllType" ]]; then
-    OType_1="all"
-  fi
-fi
+#if [[ "webppt" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
+#   #echo "[Debug] In the pptx loop"
+#   OType_1="ppt.html"
+#
+#   OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"_"type}'`
+#   echo "Staring $OType_1 generation...Creating file: $OName_3"
+#
+#   BuildStr=""
+#   #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+#   BibName=`ls | grep ".bib"`
+#   if [ -f $BibName ]; then
+#      BuildStr=$BuildStr"--bibliography $BibName "
+#   fi
+#
+#   CslName=`ls | grep ".csl"`
+#   if [[ ! "$CslName" == "" ]]; then
+#      BuildStr=$BuildStr"--csl $CslName "
+#   fi
+#
+#   AuthorFile="authorinfo.yml"
+#   if [ -f $AuthorFile ]; then
+#      BuildStr=$BuildStr"-s $AuthorFile "
+#   fi
+#
+#   #For a report: ""--toc -V documentclass:report"
+#   BuildStr=$BuildStr"-s --mathjax -t revealjs"
+#
+#   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+#   pandoc -i $IName_2 $BuildStr -o $OName_3
+#   if [[ "true" == "$AllType" ]]; then
+#     OType_1="all"
+#   fi
+#fi
 
 if [[ "docx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
-  echo "[Debug] In the docx loop"
-  if [[ "true" == "$AllType" ]]; then
-    OType_1="docx"
-  fi
-  OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
-  echo "Staring $OType_1 generation...Creating file: $OName_3"
+   #echo "[Debug] In the docx loop"
+   if [[ "true" == "$AllType" ]]; then
+     OType_1="docx"
+   fi
+   OName_3=`echo "$IName_2" | tr "/" "\n" | grep "." | tr "." " " | grep [^[:blank:]] | awk -v type="$OType_1" '{print $1"."type}'`
+   echo "Staring $OType_1 generation...Creating file: $OName_3"
 
-  if [[ "true" == "$AllType" ]]; then
-    OType_1="all"
-  fi
+   BuildStr=""
+   #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   BibName=`ls | grep ".bib"`
+   if [ -f $BibName ]; then
+      BuildStr=$BuildStr"--bibliography $BibName "
+   fi
+
+   CslName=`ls | grep ".csl"`
+   if [[ ! "$CslName" == "" ]]; then
+      BuildStr=$BuildStr"--csl $CslName "
+   fi
+
+   AuthorFile="authorinfo.yml"
+   if [ -f $AuthorFile ]; then
+      BuildStr=$BuildStr"-s $AuthorFile "
+   fi
+
+   #For a report: ""--toc -V documentclass:report"
+   BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
+
+   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   pandoc -i $IName_2 $BuildStr -o $OName_3
+   if [[ "true" == "$AllType" ]]; then
+     OType_1="all"
+   fi
 fi
 
 if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
   if [[ "true" == "$AllType" ]]; then
     OType_1="wiki"
   fi
-  echo "[Debug] In the wiki loop"
-  OName_3=`echo "$IName_2" | tr "." " " | awk -v type="$OType_1" '{print $1"."type}'`
+  #echo "[Debug] In the wiki loop"
+  OName_3=`echo "$IName_2" | tr "/" "\n" | grep "." | tr "." " " | grep [^[:blank:]] | awk -v type="$OType_1" '{print $1"."type}'`
   echo "Staring $OType_1 generation...Creating file: $OName_3"
    BuildStr=""
+
+   BuildStr=""
+   AuthorFile="authorinfo.yml"
+   if [ -f $AuthorFile ]; then
+      BuildStr=$BuildStr"-s $AuthorFile "
+   fi
 
    BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
    if [ -f $BibName ]; then
      BuildStr=$BuildStr"--filter=pandoc-citeproc --bibliography=$BibName "
    fi
 
-   BuildStr=$BuildStr"--table-of-contents -s -t mediawiki"
+   CslName=`ls | grep ".csl"`
+   if [[ ! "$CslName" == "" ]]; then
+      BuildStr=$BuildStr"--csl $CslName "
 
-   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   fi
+   BuildStr=$BuildStr"--table-of-contents "
+   BuildStr=$BuildStr"-s -t mediawiki "
+
+   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
@@ -243,12 +351,42 @@ fi
 if [[ "init" == "$OType_1" ]]; then
    if [[ "report" == "$IName_2" ]]; then
       echo "Initializing a report"
+      wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
+      wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
    elif [[ "ebook" == "$IName_2" ]]; then
       echo "Initializing an ebook"
+      wget http://www.latextemplates.com/templates/books/4/ebook.zip && unzip ebook.zip
    elif [[ "thesis" == "$IName_2" ]]; then
       echo "Initializing a thesis"
+      wget https://github.com/tompollard/phd_thesis_markdown/archive/master.zip
+      unzip style/preamble.tex style/template.tex 'source/*' -d .
+
+read -d '' ThesisScript << EOF
+#!/bin/bash
+      pandoc *.md \
+      	-o thesis.pdf \
+      	-H preamble.tex \
+      	--template=template.tex \
+      	--bibliography=*.bib 2>pandoc.log \
+      	--csl=*.csl \
+      	--highlight-style pygments \
+      	-V fontsize=12pt \
+      	-V papersize=a4paper \
+      	-V documentclass:report \
+      	-N \
+      	--latex-engine=xelatex \
+      --verbose
+EOF
+      echo $ThesisScript > MakeThesis.sh
+
+   elif [[ "website" == "$IName_2" ]]; then
+      echo "Initializing a website"
+       wget http://pandoc.org/demo/footer.html
+       wget http://pandoc.org/demo/pandoc.css
    else
       echo "Init type '$IName_2' not supported!"
    fi
 fi
 echo "Done! Built $OType_1."
+
+#Current File MD5 (less this line): f7d63541fd753b8cfee3d6551dc14f5a
