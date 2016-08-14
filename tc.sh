@@ -1,22 +1,118 @@
+#!/bin/bash
+Version="0.1.0"
+
+read -d '' HelpMessage << EOF
+Text Compiler v$Version
+====================
+This 'tool' helps generate outputs for specific templates of documentation.
+These are simply the formats I find the most useful when leveraging an .md file.
+You may choose a single output format, or all formats, at runtime.
+
+Supported Types
+---------------
+tc pdf <filename>
+tc html <filename>
+tc pptx <filename>
+tc docx <filename>
+tc wiki <filename>
+
+The 'all' Option
+----------------
+tc all <filename> - builds all the above supported types.
+
+Templates
+---------
+tc init <type> - see --templates
+
+Other Options
+-------------
+--license - print license
+--version - print version number
+--templates - show options for available templates
+EOF
+
+read -d '' TemplatesMsg << EOF
+Templates
+=========
+To help quickly document projects a few templates will be provided.
+This is not all in inclusive, but I find these to be my most used types.
+
+report
+------
+
+ebook
+-----
+
+thesis
+------
+
+
+EOF
+
+
+read -d '' License << EOF
+Copyright (c) 2016 Brandon Froberg
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+EOF
+
 WorkingDir=`echo $0 | sed 's/\/tc.sh//g'| sed 's/tc.sh//g'`
 if [[ "$WorkingDir" == "" ]]; then
   WorkingDir=`which tc`
 fi
-echo "[Debug] This is the location of tc: $WorkingDir"
+#echo "[Debug] This is the location of tc: $WorkingDir"
 
-source $WorkingDir/include/functions.sh
-
+#source $WorkingDir/include/functions.sh
 
 OType_1=$1
 IName_2=$2
 OName_3=$3
 
-OTypes=(pdf html pptx docx wiki all)
+OTypes=(pdf html pptx docx wiki all init)
 
 #File Checks
 #===========
 #Output Type
 #-----------------
+if [[ "$OType_1" == "--help" ]] || [[ "$OType_1" == "-h" ]];then
+   echo ""
+   echo "$HelpMessage"
+   exit
+fi
+
+if [[ "$OType_1" == "--version" ]];then
+   echo ""
+   echo "$Version"
+   exit
+fi
+
+if [[ "$OType_1" == "--templates" ]];then
+   echo ""
+   echo "$TemplatesMsg"
+   exit
+fi
+
+if [[ "$OType_1" == "--license" ]];then
+   echo ""
+   echo "$License"
+   exit
+fi
+
 if [[ "$OType_1" == "" ]]; then echo "No file type provided!"; exit; fi
 ValidType="false"
 AllType="false"
@@ -28,12 +124,23 @@ for i in ${OTypes[@]}; do
       fi
    fi
 done
-if [ "$ValidType" == "false" ]; then echo "File Output Type not supported!"; exit; fi
+if [ "$ValidType" == "false" ]; then
+   echo "File Output Type not supported!"
+   exit
+fi
 
 #Input File EXISTS
 #-----------------
-if [[ "$IName_2" == "" ]]; then echo "File Does NOT exist!"; exit; fi
-if [ ! -f $IName_2 ]; then echo "File Does NOT exist!"; exit; fi
+if [[ "$IName_2" == "" ]];then
+   if [[ "init" == "$OType_1" ]]; then
+      echo "Init type missing!"; exit;
+   else
+      echo "Input file missing!"; exit;
+   fi
+else
+   if [ ! -f $IName_2 ] && [[ "init" != "$OType_1" ]]; then echo "File Does NOT exist!"; exit; fi
+fi
+
 
 #funtion_CheckEmpty($FileName)
 
@@ -133,4 +240,15 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    fi
 fi
 
+if [[ "init" == "$OType_1" ]]; then
+   if [[ "report" == "$IName_2" ]]; then
+      echo "Initializing a report"
+   elif [[ "ebook" == "$IName_2" ]]; then
+      echo "Initializing an ebook"
+   elif [[ "thesis" == "$IName_2" ]]; then
+      echo "Initializing a thesis"
+   else
+      echo "Init type '$IName_2' not supported!"
+   fi
+fi
 echo "Done! Built $OType_1."
