@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.1"
+Version="0.1.2"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -196,7 +196,7 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    fi
 
    #For a report: ""--toc -V documentclass:report"
-   #BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
+   BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
 
    #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
@@ -347,7 +347,7 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=$BuildStr"--table-of-contents "
    BuildStr=$BuildStr"-s -t mediawiki"
 
-   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
@@ -437,4 +437,4 @@ echo $FooterFile > footer.html
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): c366bd0792ae29137e4c1d26347b7856
+#Current File MD5 (less this line): 0a684a923419ef4ae3ecdae27a951e87
