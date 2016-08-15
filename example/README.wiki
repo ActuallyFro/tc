@@ -35,17 +35,17 @@ The following sections detail default/optional settings for the file outputs.
 
 === Automated Bibtex Support ===
 
-BibTex is a tool and format which describe references and is mostly used with LaTeX[@BibTex]. The first &quot;.bib&quot; file, co-located with the input file, will be used.
+BibTex is a tool and format which describe references and is mostly used with LaTeX[1]. The first &quot;.bib&quot; file, co-located with the input file, will be used.
 
 === Automated CSL Style Sheet support ===
 
-The format BibTex will be presented in is a Citation Style Language file[@CSL]. The first &quot;.csl&quot; file, co-located with the input file, will be used.
+The format BibTex will be presented in is a Citation Style Language file[2]. The first &quot;.csl&quot; file, co-located with the input file, will be used.
 
 === Automated YAML metadata block support ===
 
-Pandoc supports a great document metadata block for information about the document[@PandocYAML]. The first &quot;.yml&quot; file, co-located with the input file, will be used.
+Pandoc supports a great document metadata block for information about the document[3]. The first &quot;.yml&quot; file, co-located with the input file, will be used.
 
-==== Supported Variables[@PandocVars]: ====
+==== Supported Variables[4]: ====
 
 * title
 * author
@@ -81,8 +81,49 @@ BibTex has limited support when generating the wiki file via Pandoc. Currently t
 
 = Credits =
 
-* The CitationStyleLanguage.org website manages the CSL/XML formatting[@CSLWeb].
-* John MacFarlane created Pandoc and hosts a TON of great examples on his website[@PandocAbout].
+* The CitationStyleLanguage.org website manages the CSL/XML formatting[5].
+* John MacFarlane created Pandoc and hosts a TON of great examples on his website[6].
 * Tom Pollard provides his Thesis Template via a [http://creativecommons.org/licenses/by/4.0 Creative Commons Attribution 4.0 License]
 
 = References =
+
+<div id="refs" class="references">
+
+<div id="ref-BibTex">
+
+[1] A. Feder, “Your bibtex resource.” 2006 [Online]. Available: http://www.bibtex.org/
+
+
+</div>
+<div id="ref-CSL">
+
+[2] citationstyles.com, “Official repository for citation style language (csl) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
+
+
+</div>
+<div id="ref-PandocYAML">
+
+[3] J. MacFarlane, “Manual - extension: Yaml_metadata_block.” 2016 [Online]. Available: http://pandoc.org/MANUAL.html#extension-yaml_metadata_block
+
+
+</div>
+<div id="ref-PandocVars">
+
+[4] J. MacFarlane, “Manual - variables set by pandoc.” 2016 [Online]. Available: http://pandoc.org/MANUAL.html#variables-set-by-pandoc
+
+
+</div>
+<div id="ref-CSLWeb">
+
+[5] S. Keil, J. Kool, J. Krtek, L. Magee, C. Parnot, C. Pina, A. Rossato, D. Stillman, and P. Zumstein, “Official repository for citation style language (csl) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
+
+
+</div>
+<div id="ref-PandocAbout">
+
+[6] J. MacFarlane, “About pandoc.” 2016 [Online]. Available: http://pandoc.org/index.html
+
+
+</div>
+
+</div>

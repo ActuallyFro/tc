@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.0"
+Version="0.1.1"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -334,7 +334,7 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
 
-   BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
+   BibName=`ls | grep ".bib"`
    if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
      BuildStr=$BuildStr"--filter=pandoc-citeproc --bibliography=$BibName "
    fi
@@ -345,9 +345,9 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 
    fi
    BuildStr=$BuildStr"--table-of-contents "
-   BuildStr=$BuildStr"-s -t mediawiki "
+   BuildStr=$BuildStr"-s -t mediawiki"
 
-   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
+   echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
@@ -437,4 +437,4 @@ echo $FooterFile > footer.html
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): 1a18a73bdfee04bb080768d5482dc5d2
+#Current File MD5 (less this line): c366bd0792ae29137e4c1d26347b7856
