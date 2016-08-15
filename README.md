@@ -20,10 +20,10 @@ Supported Output Types
 
 Current templates
 -----------------
-- [WIP] Report
-- [WIP] eBook
-- [WIP] Thesis
-- [WIP] Website
+- Report
+- eBook
+- Thesis
+- Website
 
 Compile Settings
 ================

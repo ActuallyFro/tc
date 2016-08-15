@@ -22,10 +22,10 @@ Ensure that MikTex/TexLive is installed, and Pandoc works with your CLI.
 
 == Current templates ==
 
-* [WIP] Report
-* [WIP] eBook
-* [WIP] Thesis
-* [WIP] Website
+* Report
+* eBook
+* Thesis
+* Website
 
 = Compile Settings =
 
