@@ -40,9 +40,15 @@ This is not all in inclusive, but I find these to be my most used types.
 
 Report (tc init report)
 -----------------------
+This template will pull down the needed files to build an IEEE cited report.
+
+NOTE: It will overwrite your tc_authorinfo.yml file!
 
 eBook (tc init ebook)
 ---------------------
+This template pulls down an example eBook template.
+
+NOTE: It is NOT directly tc compatible; I just simply admire its formatting.
 
 Thesis (tc init thesis)
 -----------------------
@@ -175,7 +181,7 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=""
    #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
    BibName=`ls | grep ".bib"`
-   if [ -f $BibName ]; then
+   if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
       BuildStr=$BuildStr"--bibliography $BibName "
    fi
 
@@ -184,13 +190,13 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-   AuthorFile="authorinfo.yml"
+   AuthorFile="tc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
 
    #For a report: ""--toc -V documentclass:report"
-   BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
+   #BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
 
    #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
    pandoc -i $IName_2 $BuildStr -o $OName_3
@@ -210,7 +216,7 @@ if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
   BuildStr=""
   #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
   BibName=`ls | grep ".bib"`
-  if [ -f $BibName ]; then
+  if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
      BuildStr=$BuildStr"--bibliography $BibName "
   fi
 
@@ -219,7 +225,7 @@ if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
      BuildStr=$BuildStr"--csl $CslName "
   fi
 
-  AuthorFile="authorinfo.yml"
+  AuthorFile="tc_authorinfo.yml"
   if [ -f $AuthorFile ]; then
      BuildStr=$BuildStr"-s $AuthorFile "
   fi
@@ -254,7 +260,7 @@ fi
 #   BuildStr=""
 #   #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
 #   BibName=`ls | grep ".bib"`
-#   if [ -f $BibName ]; then
+#   if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
 #      BuildStr=$BuildStr"--bibliography $BibName "
 #   fi
 #
@@ -263,7 +269,7 @@ fi
 #      BuildStr=$BuildStr"--csl $CslName "
 #   fi
 #
-#   AuthorFile="authorinfo.yml"
+#   AuthorFile="tc_authorinfo.yml"
 #   if [ -f $AuthorFile ]; then
 #      BuildStr=$BuildStr"-s $AuthorFile "
 #   fi
@@ -289,7 +295,7 @@ if [[ "docx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=""
    #BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
    BibName=`ls | grep ".bib"`
-   if [ -f $BibName ]; then
+   if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
       BuildStr=$BuildStr"--bibliography $BibName "
    fi
 
@@ -298,7 +304,7 @@ if [[ "docx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-   AuthorFile="authorinfo.yml"
+   AuthorFile="tc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
@@ -323,13 +329,13 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=""
 
    BuildStr=""
-   AuthorFile="authorinfo.yml"
+   AuthorFile="tc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
 
    BibName=`echo "$IName_2" | tr "." " " | awk '{print $1".bib"}'`
-   if [ -f $BibName ]; then
+   if [ -f $BibName ] && [[ "$BibName" != "" ]]; then
      BuildStr=$BuildStr"--filter=pandoc-citeproc --bibliography=$BibName "
    fi
 
@@ -353,40 +359,82 @@ if [[ "init" == "$OType_1" ]]; then
       echo "Initializing a report"
       wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
       wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
+
+iconv -c -f utf-8 -t ascii < bla.bib > example.bib
+rm bla.bib
+
+read -d '' authorYML << EOF
+---
+title:  'TC - Report Example'
+author:
+- ActuallyFro
+date: Summer 2016
+...
+EOF
+      echo "$authorYML" > tc_authorinfo.yml
+
+      echo "Example Refs" > tc_report_ex.md
+      echo "============" >> tc_report_ex.md
+      echo "" >> tc_report_ex.md
+      cat example.bib | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
+      echo "" >> tc_report_ex.md
+      echo "#References" >> tc_report_ex.md
+
+      $0 pdf tc_report_ex.md
+
    elif [[ "ebook" == "$IName_2" ]]; then
       echo "Initializing an ebook"
-      wget http://www.latextemplates.com/templates/books/4/ebook.zip && unzip ebook.zip
+      wget http://www.latextemplates.com/templates/books/4/ebook.zip && unzip ebook.zip && rm ebook.zip
+
+read -d '' EbookScript << EOF
+#!/bin/bash
+pdflatex ebook.tex
+EOF
+
+echo "$EbookScript" >> MakeEBOOK.sh
+chmod +x MakeEBOOK.sh
+
    elif [[ "thesis" == "$IName_2" ]]; then
       echo "Initializing a thesis"
-      wget https://github.com/tompollard/phd_thesis_markdown/archive/master.zip
-      unzip style/preamble.tex style/template.tex 'source/*' -d .
+      if [ ! -f ./master.zip ]; then wget https://github.com/tompollard/phd_thesis_markdown/archive/master.zip; fi
+      unzip master.zip phd_thesis_markdown-master/source/* phd_thesis_markdown-master/style/* && mv phd_thesis_markdown-master/* . && rm -r phd_thesis_markdown-master/
+      mkdir ./source/figures
+      rm ./style/univ_logo.eps
+      if [ ! -f ./logo.png ]; then wget http://www.publicdomainpictures.net/pictures/140000/velka/business-logo-1449254128SoX.jpg && mv business-logo-1449254128SoX.jpg logo.jpg; fi
+      sed -i 's/ThisULCornerWallPaper{1.0}{style\/univ_logo.eps}/includegraphics[width=2in]{logo.jpg}/g' source/01_title_page.md
+      if [ ! -f ./source/figures/boat.jpg ]; then wget https://upload.wikimedia.org/wikipedia/commons/6/6a/%22Calypso%22_-_Montreal%2C_1980.jpg && mv %22Calypso* ./source/figures/boat.jpg; fi
+      echo "\documentclass{report} \usepackage[total={5in,3.25in},top=0in,left=0in]{geometry} \usepackage{graphicx} \pagestyle{empty} \begin{document} \pdfpagewidth 5in \pdfpageheight 3.25in \begin{figure} \includegraphics[width=5in]{source/figures/boat.jpg} \end{figure} \end{document}" > ./boat.tex && pdflatex ./boat.tex && mv ./boat.pdf ./source/figures/ && rm boat.* && sed -i 's/example_figure.pdf/boat.pdf/g' ./source/11_chapter_2.md
+
+      #rm master.zip
 
 read -d '' ThesisScript << EOF
 #!/bin/bash
-      pandoc *.md \
-      	-o thesis.pdf \
-      	-H preamble.tex \
-      	--template=template.tex \
-      	--bibliography=*.bib 2>pandoc.log \
-      	--csl=*.csl \
-      	--highlight-style pygments \
-      	-V fontsize=12pt \
-      	-V papersize=a4paper \
-      	-V documentclass:report \
-      	-N \
-      	--latex-engine=xelatex \
-      --verbose
+pandoc source/*.md -o thesis.pdf --bibliography=source/references.bib --csl=style/ref_format.csl -N
 EOF
-      echo $ThesisScript > MakeThesis.sh
-
+      echo "$ThesisScript" > MakeThesis.sh
+      ./MakeThesis.sh
    elif [[ "website" == "$IName_2" ]]; then
+      echo "Stealing the report example files ..."
+      $0 init report
+
       echo "Initializing a website"
-       wget http://pandoc.org/demo/footer.html
-       wget http://pandoc.org/demo/pandoc.css
+
+read -d '' FooterFile << EOF
+<div id="footer">
+   <span style="display: inline-block; text-align: right; margin: 0px; -moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: FlipH; -ms-filter: “FlipH”;">&copy;</span> Copyleft 2016
+</div>
+EOF
+echo $FooterFile > footer.html
+
+      wget http://pandoc.org/demo/pandoc.css
+
+      $0 html tc_report_ex.md
+      rm *.pdf
+
    else
       echo "Init type '$IName_2' not supported!"
    fi
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): f7d63541fd753b8cfee3d6551dc14f5a
+#Current File MD5 (less this line): 1a18a73bdfee04bb080768d5482dc5d2

@@ -78,5 +78,6 @@ Credits
 =======
 - The CitationStyleLanguage.org website manages the CSL/XML formatting[@CSLWeb].
 - John MacFarlane created Pandoc and hosts a TON of great examples on his website[@PandocAbout].
+- Tom Pollard provides his Thesis Template via a [Creative Commons Attribution 4.0 License](http://creativecommons.org/licenses/by/4.0)
 
 #References

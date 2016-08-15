@@ -83,5 +83,6 @@ BibTex has limited support when generating the wiki file via Pandoc. Currently t
 
 * The CitationStyleLanguage.org website manages the CSL/XML formatting[@CSLWeb].
 * John MacFarlane created Pandoc and hosts a TON of great examples on his website[@PandocAbout].
+* Tom Pollard provides his Thesis Template via a [http://creativecommons.org/licenses/by/4.0 Creative Commons Attribution 4.0 License]
 
 = References =
