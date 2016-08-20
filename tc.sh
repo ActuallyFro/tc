@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.3"
+Version="0.1.4"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -366,10 +366,9 @@ if [[ "init" == "$OType_1" ]]; then
       BibFound=`ls | grep *.bib`
       if [[ "$BibFound" == "" ]]; then
          wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
+         iconv -c -f utf-8 -t ascii < bla.bib > example.bib
+         rm bla.bib
       fi
-
-      iconv -c -f utf-8 -t ascii < bla.bib > example.bib
-      rm bla.bib
 
 read -d '' authorYML << EOF
 ---
@@ -387,7 +386,8 @@ EOF
       echo "Example Refs" > tc_report_ex.md
       echo "============" >> tc_report_ex.md
       echo "" >> tc_report_ex.md
-      cat example.bib | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
+
+      cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
       echo "" >> tc_report_ex.md
       echo "#References" >> tc_report_ex.md
 
@@ -455,4 +455,4 @@ EOF
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): 5b0ba77807ffa7890f4bbc24073bb128
+#Current File MD5 (less this line): 90293fde5b90be4b406fd6f31a7dda60
