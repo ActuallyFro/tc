@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.2"
+Version="0.1.3"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -231,7 +231,7 @@ if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
   fi
 
   FooterName=`ls | grep -i footer.html`
-  if [ -f $FooterName ]; then
+  if [  ! "$FooterName" == "" ]; then
      BuildStr=$BuildStr"-A $FooterName "
   fi
 
@@ -357,11 +357,19 @@ fi
 if [[ "init" == "$OType_1" ]]; then
    if [[ "report" == "$IName_2" ]]; then
       echo "Initializing a report"
-      wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
-      wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
 
-iconv -c -f utf-8 -t ascii < bla.bib > example.bib
-rm bla.bib
+      CslFound=`ls | grep *.csl`
+      if [[ "$CslFound" == "" ]]; then
+         wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
+      fi
+
+      BibFound=`ls | grep *.bib`
+      if [[ "$BibFound" == "" ]]; then
+         wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
+      fi
+
+      iconv -c -f utf-8 -t ascii < bla.bib > example.bib
+      rm bla.bib
 
 read -d '' authorYML << EOF
 ---
@@ -371,7 +379,10 @@ author:
 date: Summer 2016
 ...
 EOF
-      echo "$authorYML" > tc_authorinfo.yml
+      YMLFound=`ls | grep "tc_authorinfo.yml"`
+      if [[ "$YMLFound" == "" ]]; then
+         echo "$authorYML" > tc_authorinfo.yml
+      fi
 
       echo "Example Refs" > tc_report_ex.md
       echo "============" >> tc_report_ex.md
@@ -424,9 +435,16 @@ read -d '' FooterFile << EOF
    <span style="display: inline-block; text-align: right; margin: 0px; -moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: FlipH; -ms-filter: “FlipH”;">&copy;</span> Copyleft 2016
 </div>
 EOF
-echo $FooterFile > footer.html
 
+   FooterFound=`ls | grep "footer.html"`
+   if [[ "$FooterFound" == "" ]]; then
+      echo $FooterFile > footer.html
+   fi
+
+   CssFound=`ls | grep *.css`
+   if [[ "$CssFound" == "" ]]; then
       wget http://pandoc.org/demo/pandoc.css
+   fi
 
       $0 html tc_report_ex.md
       rm *.pdf
@@ -437,4 +455,4 @@ echo $FooterFile > footer.html
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): 0a684a923419ef4ae3ecdae27a951e87
+#Current File MD5 (less this line): 5b0ba77807ffa7890f4bbc24073bb128
