@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.5"
+Version="0.1.6"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -359,7 +359,7 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 fi
 
 if [[ "init" == "$OType_1" ]]; then
-   if [[ "report" == "$IName_2" ]]; then
+   if [[ "authorfile" == "$IName_2" ]]; then
       echo "Initializing an authorfile"
 
 read -d '' authorYML << EOF
@@ -376,41 +376,42 @@ EOF
       fi
 
       $0 pdf tc_report_ex.md
-   elif [[ "init" == "$OType_1" ]]; then
-         if [[ "report" == "$IName_2" ]]; then
-            echo "Initializing a report"
+   fi
 
-            CslFound=`ls | grep *.csl`
-            if [[ "$CslFound" == "" ]]; then
-               wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
-            fi
+   if [[ "report" == "$IName_2" ]]; then
+      echo "Initializing a report"
 
-            BibFound=`ls | grep *.bib`
-            if [[ "$BibFound" == "" ]]; then
-               wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
-               iconv -c -f utf-8 -t ascii < bla.bib > example.bib
-               rm bla.bib
-            fi
+      CslFound=`ls | grep *.csl`
+      if [[ "$CslFound" == "" ]]; then
+         wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
+      fi
 
-            echo "Stealing the tc_authorinfo file ..."
-            $0 init authorfile
+      BibFound=`ls | grep *.bib`
+      if [[ "$BibFound" == "" ]]; then
+         wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
+         iconv -c -f utf-8 -t ascii < bla.bib > example.bib
+         rm bla.bib
+      fi
 
-            YMLFound=`ls | grep "tc_authorinfo.yml"`
-            if [[ "$YMLFound" == "" ]]; then
-               echo "$authorYML" > tc_authorinfo.yml
-            fi
+      echo "Stealing the tc_authorinfo file ..."
+      $0 init authorfile
 
-            echo "Example Refs" > tc_report_ex.md
-            echo "============" >> tc_report_ex.md
-            echo "" >> tc_report_ex.md
+      YMLFound=`ls | grep "tc_authorinfo.yml"`
+      if [[ "$YMLFound" == "" ]]; then
+         echo "$authorYML" > tc_authorinfo.yml
+      fi
 
-            cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
-            echo "" >> tc_report_ex.md
-            echo "#References" >> tc_report_ex.md
+      echo "Example Refs" > tc_report_ex.md
+      echo "============" >> tc_report_ex.md
+      echo "" >> tc_report_ex.md
 
-            $0 pdf tc_report_ex.md
+      cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
+      echo "" >> tc_report_ex.md
+      echo "#References" >> tc_report_ex.md
 
-   elif [[ "ebook" == "$IName_2" ]]; then
+      $0 pdf tc_report_ex.md
+   fi
+   if [[ "ebook" == "$IName_2" ]]; then
       echo "Initializing an ebook"
       wget http://www.latextemplates.com/templates/books/4/ebook.zip && unzip ebook.zip && rm ebook.zip
 
@@ -419,10 +420,10 @@ read -d '' EbookScript << EOF
 pdflatex ebook.tex
 EOF
 
-echo "$EbookScript" >> MakeEBOOK.sh
-chmod +x MakeEBOOK.sh
-
-   elif [[ "thesis" == "$IName_2" ]]; then
+   echo "$EbookScript" >> MakeEBOOK.sh
+   chmod +x MakeEBOOK.sh
+   fi
+   if [[ "thesis" == "$IName_2" ]]; then
       echo "Initializing a thesis"
       if [ ! -f ./master.zip ]; then wget https://github.com/tompollard/phd_thesis_markdown/archive/master.zip; fi
       unzip master.zip phd_thesis_markdown-master/source/* phd_thesis_markdown-master/style/* && mv phd_thesis_markdown-master/* . && rm -r phd_thesis_markdown-master/
@@ -441,7 +442,9 @@ pandoc source/*.md -o thesis.pdf --bibliography=source/references.bib --csl=styl
 EOF
       echo "$ThesisScript" > MakeThesis.sh
       ./MakeThesis.sh
-   elif [[ "website" == "$IName_2" ]]; then
+   fi
+
+   if [[ "website" == "$IName_2" ]]; then
       echo "Stealing the report example files ..."
       $0 init report
 
@@ -449,27 +452,26 @@ EOF
 
 read -d '' FooterFile << EOF
 <div id="footer">
-   <span style="display: inline-block; text-align: right; margin: 0px; -moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: FlipH; -ms-filter: “FlipH”;">&copy;</span> Copyleft 2016
+<span style="display: inline-block; text-align: right; margin: 0px; -moz-transform: scaleX(-1); -o-transform: scaleX(-1); -webkit-transform: scaleX(-1); transform: scaleX(-1); filter: FlipH; -ms-filter: “FlipH”;">&copy;</span> Copyleft 2016
 </div>
 EOF
 
-   FooterFound=`ls | grep "footer.html"`
-   if [[ "$FooterFound" == "" ]]; then
-      echo $FooterFile > footer.html
+      FooterFound=`ls | grep "footer.html"`
+      if [[ "$FooterFound" == "" ]]; then
+         echo $FooterFile > footer.html
+      fi
+
+      CssFound=`ls | grep *.css`
+      if [[ "$CssFound" == "" ]]; then
+         wget http://pandoc.org/demo/pandoc.css
+      fi
+
+         $0 html tc_report_ex.md
+         rm *.pdf
    fi
 
-   CssFound=`ls | grep *.css`
-   if [[ "$CssFound" == "" ]]; then
-      wget http://pandoc.org/demo/pandoc.css
-   fi
-
-      $0 html tc_report_ex.md
-      rm *.pdf
-
-   else
-      echo "Init type '$IName_2' not supported!"
-   fi
 fi
+
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): 6d898cc624c96debeb1c822667b3e156
+### Current File MD5 (less this line): de5cf7ff971d2cff6e069e2a2135f31a
