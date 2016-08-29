@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.4"
+Version="0.1.5"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -28,7 +28,7 @@ Other Options
 --license - print license
 --version - print version number
 --templates - show options for available templates
---install - copy this script to /bin/$0
+--install - copy this script to /bin/tc
 EOF
 
 read -d '' TemplatesMsg << EOF
@@ -37,6 +37,10 @@ Templates
 =========
 To help quickly document projects a few templates will be provided.
 This is not all in inclusive, but I find these to be my most used types.
+
+Author File (tc init authorfile)
+---------------------------------
+This template will place a tc_authorinfo.yml file in the present directory.
 
 Report (tc init report)
 -----------------------
@@ -106,7 +110,7 @@ fi
 if [[ "$OType_1" == "--version" ]];then
    echo ""
    echo "Version: $Version"
-   echo "md5 (less last line): "`cat $0 | head -n -1 | md5sum | awk '{print $1}'`
+   echo "md5 (less last line): "`cat $0 | grep -v "###" | md5sum | awk '{print $1}'`
    exit
 fi
 
@@ -356,19 +360,7 @@ fi
 
 if [[ "init" == "$OType_1" ]]; then
    if [[ "report" == "$IName_2" ]]; then
-      echo "Initializing a report"
-
-      CslFound=`ls | grep *.csl`
-      if [[ "$CslFound" == "" ]]; then
-         wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
-      fi
-
-      BibFound=`ls | grep *.bib`
-      if [[ "$BibFound" == "" ]]; then
-         wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
-         iconv -c -f utf-8 -t ascii < bla.bib > example.bib
-         rm bla.bib
-      fi
+      echo "Initializing an authorfile"
 
 read -d '' authorYML << EOF
 ---
@@ -383,15 +375,40 @@ EOF
          echo "$authorYML" > tc_authorinfo.yml
       fi
 
-      echo "Example Refs" > tc_report_ex.md
-      echo "============" >> tc_report_ex.md
-      echo "" >> tc_report_ex.md
-
-      cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
-      echo "" >> tc_report_ex.md
-      echo "#References" >> tc_report_ex.md
-
       $0 pdf tc_report_ex.md
+   elif [[ "init" == "$OType_1" ]]; then
+         if [[ "report" == "$IName_2" ]]; then
+            echo "Initializing a report"
+
+            CslFound=`ls | grep *.csl`
+            if [[ "$CslFound" == "" ]]; then
+               wget https://raw.githubusercontent.com/citation-style-language/styles/master/ieee-with-url.csl
+            fi
+
+            BibFound=`ls | grep *.bib`
+            if [[ "$BibFound" == "" ]]; then
+               wget https://gist.githubusercontent.com/nylki/e723f1ae15edc1baea43/raw/4d8dd17776844649e060efe2e51e32ed6fb0a887/bla.bib
+               iconv -c -f utf-8 -t ascii < bla.bib > example.bib
+               rm bla.bib
+            fi
+
+            echo "Stealing the tc_authorinfo file ..."
+            $0 init authorfile
+
+            YMLFound=`ls | grep "tc_authorinfo.yml"`
+            if [[ "$YMLFound" == "" ]]; then
+               echo "$authorYML" > tc_authorinfo.yml
+            fi
+
+            echo "Example Refs" > tc_report_ex.md
+            echo "============" >> tc_report_ex.md
+            echo "" >> tc_report_ex.md
+
+            cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
+            echo "" >> tc_report_ex.md
+            echo "#References" >> tc_report_ex.md
+
+            $0 pdf tc_report_ex.md
 
    elif [[ "ebook" == "$IName_2" ]]; then
       echo "Initializing an ebook"
@@ -455,4 +472,4 @@ EOF
 fi
 echo "Done! Built $OType_1."
 
-#Current File MD5 (less this line): 90293fde5b90be4b406fd6f31a7dda60
+### Current File MD5 (less this line): 6d898cc624c96debeb1c822667b3e156
