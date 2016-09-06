@@ -1,6 +1,6 @@
 __TOC__
 
-= TC - Text Compiler =
+= TCC - Text Compiler =
 
 This is just a glorified grouping of aliases I want to use with some combination of Latex, Markdown, and Pandoc.
 
@@ -91,13 +91,13 @@ BibTex has limited support when generating the wiki file via Pandoc. Currently t
 
 <div id="ref-BibTex">
 
-[1] A. Feder, “Your bibtex resource.” 2006 [Online]. Available: http://www.bibtex.org/
+[1] A. Feder, “Your bibTeX resource.” 2006 [Online]. Available: http://www.bibtex.org/
 
 
 </div>
 <div id="ref-CSL">
 
-[2] citationstyles.com, “Official repository for citation style language (csl) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
+[2] citationstyles.com, “Official repository for citation style language (cSL) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
 
 
 </div>
@@ -115,7 +115,7 @@ BibTex has limited support when generating the wiki file via Pandoc. Currently t
 </div>
 <div id="ref-CSLWeb">
 
-[5] S. Keil, J. Kool, J. Krtek, L. Magee, C. Parnot, C. Pina, A. Rossato, D. Stillman, and P. Zumstein, “Official repository for citation style language (csl) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
+[5] S. Keil, J. Kool, J. Krtek, L. Magee, C. Parnot, C. Pina, A. Rossato, D. Stillman, and P. Zumstein, “Official repository for citation style language (cSL) citation styles.” 2016 [Online]. Available: https://github.com/citation-style-language/styles
 
 
 </div>

@@ -1,5 +1,5 @@
-TC - Text Compiler
-==================
+TCC - Text Compiler
+===================
 This is just a glorified grouping of aliases I want to use with some combination of Latex, Markdown, and Pandoc.
 
 TL;DR
