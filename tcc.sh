@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.1.6"
+Version="0.2.0"
 
 read -d '' HelpMessage << EOF
 Text Compiler v$Version
@@ -10,25 +10,25 @@ You may choose a single output format, or all formats, at runtime.
 
 Supported Types
 ---------------
-tc pdf <filename>
-tc html <filename>
-tc docx <filename>
-tc wiki <filename>
+tcc pdf <filename>
+tcc html <filename>
+tcc docx <filename>
+tcc wiki <filename>
 
 The 'all' Option
 ----------------
-tc all <filename> - builds all the above supported types.
+tcc all <filename> - builds all the above supported types.
 
 Templates
 ---------
-tc init <type> - see --templates
+tcc init <type> - see --templates
 
 Other Options
 -------------
 --license - print license
 --version - print version number
 --templates - show options for available templates
---install - copy this script to /bin/tc
+--install - copy this script to /bin/tcc
 EOF
 
 read -d '' TemplatesMsg << EOF
@@ -38,26 +38,26 @@ Templates
 To help quickly document projects a few templates will be provided.
 This is not all in inclusive, but I find these to be my most used types.
 
-Author File (tc init authorfile)
+Author File (tcc init authorfile)
 ---------------------------------
-This template will place a tc_authorinfo.yml file in the present directory.
+This template will place a tcc_authorinfo.yml file in the present directory.
 
-Report (tc init report)
+Report (tcc init report)
 -----------------------
 This template will pull down the needed files to build an IEEE cited report.
 
-NOTE: It will overwrite your tc_authorinfo.yml file!
+NOTE: It will overwrite your tcc_authorinfo.yml file!
 
-eBook (tc init ebook)
+eBook (tcc init ebook)
 ---------------------
 This template pulls down an example eBook template.
 
-NOTE: It is NOT directly tc compatible; I just simply admire its formatting.
+NOTE: It is NOT directly tcc compatible; I just simply admire its formatting.
 
-Thesis (tc init thesis)
+Thesis (tcc init thesis)
 -----------------------
 
-Website  (tc init website)
+Website  (tcc init website)
 --------------------------
 
 EOF
@@ -85,11 +85,11 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 EOF
 
-WorkingDir=`echo $0 | sed 's/\/tc.sh//g'| sed 's/tc.sh//g'`
+WorkingDir=`echo $0 | sed 's/\/tcc.sh//g'| sed 's/tcc.sh//g'`
 if [[ "$WorkingDir" == "" ]]; then
-  WorkingDir=`which tc`
+  WorkingDir=`which tcc`
 fi
-#echo "[Debug] This is the location of tc: $WorkingDir"
+#echo "[Debug] This is the location of tcc: $WorkingDir"
 
 OType_1=$1
 IName_2=$2
@@ -134,10 +134,10 @@ if [[ "$OType_1" == "--install" ]];then
    if [[ "$User" != "root" ]]; then
       echo "[WARNING] Currently NOT root!"
    fi
-   cp $0 /bin/tc
-   Check=`ls /bin/tc | wc -l`
+   cp $0 /bin/tcc
+   Check=`ls /bin/tcc | wc -l`
    if [[ "$Check" == "1" ]]; then
-      echo "tc installed successfully!"
+      echo "tcc installed successfully!"
    fi
 
    exit
@@ -194,7 +194,7 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-   AuthorFile="tc_authorinfo.yml"
+   AuthorFile="tcc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
@@ -229,7 +229,7 @@ if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
      BuildStr=$BuildStr"--csl $CslName "
   fi
 
-  AuthorFile="tc_authorinfo.yml"
+  AuthorFile="tcc_authorinfo.yml"
   if [ -f $AuthorFile ]; then
      BuildStr=$BuildStr"-s $AuthorFile "
   fi
@@ -273,7 +273,7 @@ fi
 #      BuildStr=$BuildStr"--csl $CslName "
 #   fi
 #
-#   AuthorFile="tc_authorinfo.yml"
+#   AuthorFile="tcc_authorinfo.yml"
 #   if [ -f $AuthorFile ]; then
 #      BuildStr=$BuildStr"-s $AuthorFile "
 #   fi
@@ -308,7 +308,7 @@ if [[ "docx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
-   AuthorFile="tc_authorinfo.yml"
+   AuthorFile="tcc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
@@ -333,7 +333,7 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=""
 
    BuildStr=""
-   AuthorFile="tc_authorinfo.yml"
+   AuthorFile="tcc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
    fi
@@ -364,18 +364,18 @@ if [[ "init" == "$OType_1" ]]; then
 
 read -d '' authorYML << EOF
 ---
-title:  'TC - Report Example'
+title:  'TCC - Report Example'
 author:
 - ActuallyFro
 date: Summer 2016
 ...
 EOF
-      YMLFound=`ls | grep "tc_authorinfo.yml"`
+      YMLFound=`ls | grep "tcc_authorinfo.yml"`
       if [[ "$YMLFound" == "" ]]; then
-         echo "$authorYML" > tc_authorinfo.yml
+         echo "$authorYML" > tcc_authorinfo.yml
       fi
 
-      $0 pdf tc_report_ex.md
+      $0 pdf tcc_report_ex.md
    fi
 
    if [[ "report" == "$IName_2" ]]; then
@@ -393,23 +393,23 @@ EOF
          rm bla.bib
       fi
 
-      echo "Stealing the tc_authorinfo file ..."
+      echo "Stealing the tcc_authorinfo file ..."
       $0 init authorfile
 
-      YMLFound=`ls | grep "tc_authorinfo.yml"`
+      YMLFound=`ls | grep "tcc_authorinfo.yml"`
       if [[ "$YMLFound" == "" ]]; then
-         echo "$authorYML" > tc_authorinfo.yml
+         echo "$authorYML" > tcc_authorinfo.yml
       fi
 
-      echo "Example Refs" > tc_report_ex.md
-      echo "============" >> tc_report_ex.md
-      echo "" >> tc_report_ex.md
+      echo "Example Refs" > tcc_report_ex.md
+      echo "============" >> tcc_report_ex.md
+      echo "" >> tcc_report_ex.md
 
-      cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tc_report_ex.md
-      echo "" >> tc_report_ex.md
-      echo "#References" >> tc_report_ex.md
+      cat `ls | grep *.bib | head -1` | grep "@" | grep "{" | tr "{" "\n" | grep , | tr -d "," | grep -v "?" | awk '{print "- Example Reference[@"$1"]"}' >> tcc_report_ex.md
+      echo "" >> tcc_report_ex.md
+      echo "#References" >> tcc_report_ex.md
 
-      $0 pdf tc_report_ex.md
+      $0 pdf tcc_report_ex.md
    fi
    if [[ "ebook" == "$IName_2" ]]; then
       echo "Initializing an ebook"
@@ -466,7 +466,7 @@ EOF
          wget http://pandoc.org/demo/pandoc.css
       fi
 
-         $0 html tc_report_ex.md
+         $0 html tcc_report_ex.md
          rm *.pdf
    fi
 
