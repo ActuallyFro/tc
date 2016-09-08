@@ -2,8 +2,8 @@
 Version="0.2.0"
 
 read -d '' HelpMessage << EOF
-Text Compiler v$Version
-====================
+Text Compiler (tcc) v$Version
+==========================
 This 'tool' helps generate outputs for specific templates of documentation.
 These are simply the formats I find the most useful when leveraging an .md file.
 You may choose a single output format, or all formats, at runtime.
@@ -59,6 +59,10 @@ Thesis (tcc init thesis)
 
 Website  (tcc init website)
 --------------------------
+
+Lecture  (tcc init lecture ##)
+------------------------------
+This template simply touches a file combining the format/number given & iso date
 
 EOF
 
@@ -359,6 +363,17 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 fi
 
 if [[ "init" == "$OType_1" ]]; then
+
+   if [[ "Lecture" == "$IName_2" ]] || [[ "lecture" == "$IName_2" ]]; then
+     if [[ "$OName_3" != "" ]]; then
+        File="Lecture_"$OName_3"_"`date --iso`".md"
+        echo "Making: $File"
+        touch $File
+     else
+        echo "Provide a Lecture #!"
+     fi
+   fi
+
    if [[ "authorfile" == "$IName_2" ]]; then
       echo "Initializing an authorfile"
 
@@ -474,4 +489,4 @@ fi
 
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): de5cf7ff971d2cff6e069e2a2135f31a
+### Current File MD5 (less this line): deed0a24e700de56807b980b51228c45
