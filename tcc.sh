@@ -1,5 +1,5 @@
 #!/bin/bash
-Version="0.2.0"
+Version="1.0.0"
 
 read -d '' HelpMessage << EOF
 Text Compiler (tcc) v$Version
@@ -206,8 +206,8 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    #For a report: ""--toc -V documentclass:report"
    BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
 
-   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
-   pandoc -i $IName_2 $BuildStr -o $OName_3
+   #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
+   pandoc $BuildStr -o $OName_3 $IName_2
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
    fi
@@ -250,8 +250,8 @@ if [[ "html" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 
   BuildStr=$BuildStr"--number-sections --table-of-contents "
 
-  #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
-  pandoc -i $IName_2 $BuildStr -o $OName_3
+  #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
+  pandoc $BuildStr -o $OName_3 $IName_2
 
   if [[ "true" == "$AllType" ]]; then
     OType_1="all"
@@ -285,8 +285,8 @@ fi
 #   #For a report: ""--toc -V documentclass:report"
 #   BuildStr=$BuildStr"-s --mathjax -t revealjs"
 #
-#   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
-#   pandoc -i $IName_2 $BuildStr -o $OName_3
+#   #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
+#   pandoc $BuildStr -o $OName_3 $IName_2
 #   if [[ "true" == "$AllType" ]]; then
 #     OType_1="all"
 #   fi
@@ -320,8 +320,8 @@ if [[ "docx" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    #For a report: ""--toc -V documentclass:report"
    BuildStr=$BuildStr"-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
 
-   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
-   pandoc -i $IName_2 $BuildStr -o $OName_3
+   #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
+   pandoc $BuildStr -o $OName_3 $IName_2
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
    fi
@@ -355,8 +355,8 @@ if [[ "wiki" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
    BuildStr=$BuildStr"--table-of-contents "
    BuildStr=$BuildStr"-s -t mediawiki"
 
-   #echo "[Debug] This is the Build string: pandoc -i $IName_2 $BuildStr -o $OName_3"
-   pandoc -i $IName_2 $BuildStr -o $OName_3
+   #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
+   pandoc $BuildStr -o $OName_3 $IName_2
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
    fi
@@ -489,4 +489,4 @@ fi
 
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): deed0a24e700de56807b980b51228c45
+### Current File MD5 (less this line): 3d2cb986842e4e3f910a3f0479d3e19d
