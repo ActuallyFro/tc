@@ -1,8 +1,10 @@
 #!/bin/bash
-Version="1.0.0"
+ToolName="tcc"
+Version="1.1.0"
+url="https://raw.githubusercontent.com/ActuallyFro/tc/master/tcc.sh"
 
 read -d '' HelpMessage << EOF
-Text Compiler (tcc) v$Version
+Text Compiler ($ToolName) v$Version
 ==========================
 This 'tool' helps generate outputs for specific templates of documentation.
 These are simply the formats I find the most useful when leveraging an .md file.
@@ -29,6 +31,7 @@ Other Options
 --version - print version number
 --templates - show options for available templates
 --install - copy this script to /bin/tcc
+--update - installs the latest version from GitHub
 EOF
 
 read -d '' TemplatesMsg << EOF
@@ -144,6 +147,58 @@ if [[ "$OType_1" == "--install" ]];then
       echo "tcc installed successfully!"
    fi
 
+   exit
+fi
+
+if [[ "$1" == "--check-script" ]] || [[ "$1" == "--crc" ]];then
+   CRCRan=`$0 --version | grep "md5" | tr ":" "\n" | grep -v "md5" | tr -d " "`
+   CRCScript=`tail -1 $0 | grep -v "md5sum" | grep -v "cat" | tr ":" "\n" | grep -v "md5" | tr -d " " | grep -v "#"`
+   if [[ "$CRCRan" == "$CRCScript" ]]; then
+      echo "$0 is good!"
+   else
+      echo "The checksums didn't match!"
+      echo "1. $CRCRan  (vs.)"
+      echo "2. $CRCScript"
+   fi
+   exit
+fi
+if [[ "$1" == "--update" ]];then
+   echo ""
+   if [[ "`which wget`" != "" ]]; then
+      echo "Grabbing latest GitHub commit..."
+      wget $url -O /tmp/junk$ToolName
+   elif [[ "`which curl`" != "" ]]; then
+      echo "Grabbing latest GitHub commit...with curl...ew"
+      curl $url > /tmp/junk$ToolName
+   else
+      echo "... or I cant; Install wget or curl"
+   fi
+   if [[ -f /tmp/junk$ToolName ]]; then
+      lastVers="$Version"
+      newVers=`cat /tmp/junk$ToolName | grep "Version=" | grep -v "cat" | tr "\"" "\n" | grep "\."`
+      lastVersHack=`echo "$lastVers" | tr "." " " | awk '{printf("9%04d%04d%04d",$1,$2,$3)}'`
+      newVersHack=`echo "$newVers" | tr "." " " | awk '{printf("9%04d%04d%04d",$1,$2,$3)}'`
+      echo ""
+      if [[ "$lastVersHack" -lt "$newVersHack" ]]; then
+         echo "Updating $ToolName to $newVers"
+         chmod +x /tmp/junk$ToolName
+         echo "Checking the CRC..."
+         CheckCRC=`/tmp/junk$ToolName --check-script | grep "good" | wc -l`
+         if [[ "$CheckCRC" == "1" ]]; then
+            echo "Installing ..."
+            /tmp/junk$ToolName --install
+         else
+            echo "ERROR! The CRC failed, considering file to be bad!"
+            rm /tmp/junk$ToolName
+            exit
+         fi
+         rm /tmp/junk$ToolName
+      else
+         echo "You are up to date! ($lastVers)"
+      fi
+   else
+      echo "Well ... that happened. (Check your Inet; the new $ToolName couldn't be grabbed!"
+   fi
    exit
 fi
 
@@ -489,4 +544,4 @@ fi
 
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): 3d2cb986842e4e3f910a3f0479d3e19d
+### Current File MD5 (less this line): 477e15d9bfcfe626f4678113acb80fe5
