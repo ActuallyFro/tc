@@ -1,6 +1,6 @@
 #!/bin/bash
 ToolName="tcc"
-Version="1.1.0"
+Version="1.2.0"
 url="https://raw.githubusercontent.com/ActuallyFro/tc/master/tcc.sh"
 
 read -d '' HelpMessage << EOF
@@ -253,6 +253,7 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
       BuildStr=$BuildStr"--csl $CslName "
    fi
 
+
    AuthorFile="tcc_authorinfo.yml"
    if [ -f $AuthorFile ]; then
       BuildStr=$BuildStr"-s $AuthorFile "
@@ -263,6 +264,25 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 
    #echo "[Debug] This is the Build string: pandoc $BuildStr -o $OName_3 $IName_2"
    pandoc $BuildStr -o $OName_3 $IName_2
+
+   AppendixFile="appendix.md"
+   AppendixYMLFile="appendix.yml"
+   pdftkInstalled=`which pdftk`
+   AltBuildStr="-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
+   if [ -f $AppendixFile ] && [[ "$IName_2" != "$AppendixFile" ]]; then
+      if [[ "$pdftkInstalled" == "" ]]; then
+         echo "[WARNING] Cannot merge appendix! Missing pdftk!"
+      else
+         if [ -f $AppendixYMLFile ]; then
+            pandoc $AltBuildStr -s $AppendixYMLFile -o appendix_tcc.pdf
+         else
+            pandoc $AltBuildStr -o appendix_tcc.pdf $Appendix
+         fi
+            pdftk $OName_3 appendix_tcc.pdf cat output merged_appendix.pdf
+            mv merged_appendix.pdf $OName_3
+      fi
+   fi
+
    if [[ "true" == "$AllType" ]]; then
      OType_1="all"
    fi
@@ -544,4 +564,4 @@ fi
 
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): 477e15d9bfcfe626f4678113acb80fe5
+### Current File MD5 (less this line): 6ee3e8a169f9e959f57cf398b6677051
