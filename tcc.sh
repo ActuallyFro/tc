@@ -1,6 +1,6 @@
 #!/bin/bash
 ToolName="tcc"
-Version="1.2.2"
+Version="1.2.3"
 url="https://raw.githubusercontent.com/ActuallyFro/tc/master/tcc.sh"
 
 read -d '' HelpMessage << EOF
@@ -275,8 +275,10 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
          echo "[WARNING] Cannot merge appendix! Missing pdftk!"
       else
          if [ -f $AppendixYMLFile ]; then
+            #echo "[Debug] This is the Build string: pandoc $AltBuildStr -s $AppendixYMLFile -o appendix_tcc.pdf $AppendixFile"
             pandoc $AltBuildStr -s $AppendixYMLFile -o appendix_tcc.pdf $AppendixFile
          else
+            #echo "[Debug] This is the Build string: pandoc $AltBuildStr -o appendix_tcc.pdf $AppendixFile"
             pandoc $AltBuildStr -o appendix_tcc.pdf $AppendixFile
          fi
          pdftk $OName_3 appendix_tcc.pdf cat output merged_appendix.pdf
