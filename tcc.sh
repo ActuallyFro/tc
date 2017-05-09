@@ -1,6 +1,6 @@
 #!/bin/bash
 ToolName="tcc"
-Version="1.2.3"
+Version="1.3.0"
 url="https://raw.githubusercontent.com/ActuallyFro/tc/master/tcc.sh"
 
 read -d '' HelpMessage << EOF
@@ -267,24 +267,47 @@ if [[ "pdf" == "$OType_1" ]] || [[ "all" == "$OType_1" ]] ; then
 
    AppendixFile="appendix.md"
    AppendixYMLFile="appendix.yml"
-   pdftkInstalled=`which pdftk`
+   #pdftkInstalled=`which pdftk`
+
    AltBuildStr="-V geometry:margin=1.125in -V fontsize=12pt -V papersize=letter -V linkcolor=black"
    if [ -f $AppendixFile ] && [[ "$IName_2" != "$AppendixFile" ]]; then
       #echo "[Debug] Building the appendix:"
-      if [[ "$pdftkInstalled" == "" ]]; then
-         echo "[WARNING] Cannot merge appendix! Missing pdftk!"
-      else
+      #if [[ "$pdftkInstalled" == "" ]]; then
+      #   echo "[WARNING] Cannot merge appendix! Missing pdftk!"
+      #else
          if [ -f $AppendixYMLFile ]; then
             #echo "[Debug] This is the Build string: pandoc $AltBuildStr -s $AppendixYMLFile -o appendix_tcc.pdf $AppendixFile"
             pandoc $AltBuildStr -s $AppendixYMLFile -o appendix_tcc.pdf $AppendixFile
          else
             #echo "[Debug] This is the Build string: pandoc $AltBuildStr -o appendix_tcc.pdf $AppendixFile"
             pandoc $AltBuildStr -o appendix_tcc.pdf $AppendixFile
+
          fi
-         pdftk $OName_3 appendix_tcc.pdf cat output merged_appendix.pdf
-         mv merged_appendix.pdf $OName_3
+         #pdftk $OName_3 appendix_tcc.pdf cat output merged_appendix.pdf
+         #mv merged_appendix.pdf $OName_3
+IName_3=`echo "$IName_2" | tr "/" "\n" | grep "." | tr "." " " | grep [^[:blank:]] | awk '{print $1}'`
+#This allows shell variables: (but DISALLOWS backslashes)
+read -d '' texMerge << EOF
+___documentclass{article}
+___usepackage{pdfpages} %includepdf[...]
+___usepackage{pgffor} %___foreach
+
+___begin{document}
+  ___foreach ___x in {$IName_3,appendix_tcc}{
+    ___includepdf[pages=-]{___x}
+  }
+___end{document}
+EOF
+         echo "$texMerge" > tcc_tex_merge.tex
+         sed 's/___/\\/g' -i tcc_tex_merge.tex # Silly mix/matching of backslash and shell variables
+         pdflatex tcc_tex_merge.tex 2>&1 > tcc_temp_pdflatex.out
+         rm *.out
+         rm *.aux
+         rm *.log
+         mv tcc_tex_merge.pdf $OName_3
          rm appendix_tcc.pdf
-      fi
+         rm tcc_tex_merge.tex
+      #fi
    fi
 
    if [[ "true" == "$AllType" ]]; then
