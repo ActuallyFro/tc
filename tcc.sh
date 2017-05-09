@@ -1,6 +1,6 @@
 #!/bin/bash
 ToolName="tcc"
-Version="1.3.0"
+Version="1.3.1"
 url="https://raw.githubusercontent.com/ActuallyFro/tc/master/tcc.sh"
 
 read -d '' HelpMessage << EOF
@@ -117,7 +117,7 @@ fi
 if [[ "$OType_1" == "--version" ]];then
    echo ""
    echo "Version: $Version"
-   echo "md5 (less last line): "`cat $0 | grep -v "###" | md5sum | awk '{print $1}'`
+   echo "sha256 (less last line): "`cat $0 | grep -v "###" | sha256sum | awk '{print $1}'`
    exit
 fi
 
@@ -151,8 +151,8 @@ if [[ "$OType_1" == "--install" ]];then
 fi
 
 if [[ "$1" == "--check-script" ]] || [[ "$1" == "--crc" ]];then
-   CRCRan=`$0 --version | grep "md5" | tr ":" "\n" | grep -v "md5" | tr -d " "`
-   CRCScript=`tail -1 $0 | grep -v "md5sum" | grep -v "cat" | tr ":" "\n" | grep -v "md5" | tr -d " " | grep -v "#"`
+   CRCRan=`$0 --version | grep "sha256" | tr ":" "\n" | grep -v "sha256" | tr -d " "`
+   CRCScript=`tail -1 $0 | grep -v "sha256sum" | grep -v "cat" | tr ":" "\n" | grep -v "sha256" | tr -d " " | grep -v "#"`
    if [[ "$CRCRan" == "$CRCScript" ]]; then
       echo "$0 is good!"
    else
@@ -591,4 +591,4 @@ fi
 
 echo "Done! Built $OType_1."
 
-### Current File MD5 (less this line): 50ec0df58b0938e6b19817df4bee2cfe
+### Current File sha256 (less this line): cdf48d3f0c5ca707ebd1cea6ffbd207bad0914adf3b31c6fb4946c65e3402aa8
